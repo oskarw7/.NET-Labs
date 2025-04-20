@@ -5,8 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lab1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="800">
-    <Grid>
+        Title="Lab1" Height="600" Width="800">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Menu">
+                <MenuItem Header="Generate Data" Click="GenerateData_Click"/>
+                <MenuItem Header="Version" Click="Version_Click"/>
+                <MenuItem Header="Exit" Click="Exit_Click"/>
+            </MenuItem>
+        </Menu>
 
-    </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TreeView x:Name="EmployeeTreeView" 
+                  Grid.Column="0"
+                  SelectedItemChanged="EmployeeTreeView_SelectedItemChanged" 
+                  ContextMenuOpening="TreeItem_ContextMenuOpening">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding subordinates}">
+                        <TextBlock Text="{Binding name}"/>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+            <ScrollViewer Grid.Column="1">
+                <StackPanel x:Name="DetailsPanel" Margin="10"/>
+            </ScrollViewer>
+        </Grid>
+    </DockPanel>
 </Window>

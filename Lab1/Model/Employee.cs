@@ -9,10 +9,11 @@ namespace Lab1.Model
 {
     public class Employee
     {
-        private string name {  get; set; }
-        private int yearOfEmployment { get; set; }
-        private double skillLevel { get; set; }
-        private ObservableCollection<Employee> subordinates { get; set; }
+        // Public, zeby TreeView widzialo zmienne do bindingu
+        public string name {  get; private set; }
+        public int yearOfEmployment { get; private set; }
+        public double skillLevel { get; private set; }
+        public ObservableCollection<Employee> subordinates { get; private set; }
 
         public Employee(string name, int yearOfEmployment, double skillLevel, 
             ObservableCollection<Employee> subordinates) {
@@ -25,6 +26,11 @@ namespace Lab1.Model
         public override string ToString()
         {
             return "Employee: name=" + name + ", year of employment=" + yearOfEmployment + ", skill level=" + skillLevel;
+        }
+
+        public void AddSubordinate(Employee subordinate)
+        {
+            subordinates.Add(subordinate);
         }
     }
 }
