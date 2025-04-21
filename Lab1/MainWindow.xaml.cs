@@ -89,13 +89,45 @@ namespace Lab1
 
         public void EmployeeTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) { 
             var selectedEmployee = EmployeeTreeView.SelectedItem as Employee;
-            if (selectedEmployee == null)
-                return;
+            if (selectedEmployee == null) return;
             string employeesText = selectedEmployee.PrintRecursive();
             EmployeesDetails.Text = employeesText;
         }
 
-        public void TreeItem_ContextMenuOpening(object sender, RoutedEventArgs e)
+        public void EmployeeTreeView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var src = e.OriginalSource as DependencyObject;
+
+            while (src != null && src is not TreeViewItem)
+            {
+                src = VisualTreeHelper.GetParent(src);
+            }
+            var treeItem = src as TreeViewItem;
+
+            if (treeItem == null) return;
+            treeItem.Focus();
+            e.Handled = true; // przeciwdzialanie wyswietleni defaultowemu context menu
+
+            var employee = treeItem.DataContext as Employee;
+            if (employee == null) return;
+
+            var contextMenu = new ContextMenu();
+            var createItem = new MenuItem { Header = "Create" };
+            createItem.Click += (s, ev) => CreateEmployee(employee);
+            contextMenu.Items.Add(createItem);
+            var deleteItem = new MenuItem { Header = "Delete" };
+            deleteItem.Click += (s, ev) => DeleteEmployee(employee);
+            contextMenu.Items.Add(deleteItem);
+
+            treeItem.ContextMenu = contextMenu;
+        }
+
+        public void CreateEmployee(Employee superiorEmployee)
+        {
+
+        }
+
+        public void DeleteEmployee(Employee employee)
         {
 
         }

@@ -24,7 +24,7 @@
             <TreeView x:Name="EmployeeTreeView" 
                   Grid.Column="0"
                   SelectedItemChanged="EmployeeTreeView_SelectedItemChanged" 
-                  ContextMenuOpening="TreeItem_ContextMenuOpening">
+                  PreviewMouseRightButtonDown="EmployeeTreeView_PreviewMouseRightButtonDown">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding subordinates}">
                         <TextBlock Text="{Binding name}"/>
