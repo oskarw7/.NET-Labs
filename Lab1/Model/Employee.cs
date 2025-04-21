@@ -32,5 +32,15 @@ namespace Lab1.Model
         {
             subordinates.Add(subordinate);
         }
+
+        public string PrintRecursive(int depth = 0)
+        {
+            string result = new string('\t', depth) + this + "\n\n";
+            foreach (var subordinate in subordinates)
+            {
+                result += subordinate.PrintRecursive(depth + 1);
+            }
+            return result;
+        }
     }
 }

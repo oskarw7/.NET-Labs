@@ -31,8 +31,10 @@
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
-            <ScrollViewer Grid.Column="1">
-                <StackPanel x:Name="DetailsPanel" Margin="10"/>
+            <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <TextBlock x:Name="EmployeesDetails" 
+                    Margin="10"
+                    TextWrapping="NoWrap"/>
             </ScrollViewer>
         </Grid>
     </DockPanel>
