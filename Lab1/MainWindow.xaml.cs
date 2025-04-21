@@ -91,7 +91,7 @@ namespace Lab1
             var selectedEmployee = EmployeeTreeView.SelectedItem as Employee;
             if (selectedEmployee == null) return;
             string employeesText = selectedEmployee.PrintRecursive();
-            EmployeesDetails.Text = employeesText;
+            EmployeeDetails.Text = employeesText;
         }
 
         public void EmployeeTreeView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -129,7 +129,17 @@ namespace Lab1
 
         public void DeleteEmployee(Employee employee)
         {
-
+            var supervisor = employee.supervisor;
+            if(supervisor == null)
+            {
+                employees.Remove(employee);
+            }
+            else
+            {
+                employee.supervisor.subordinates.Remove(employee);
+            }
+            EmployeeTreeView.Items.Refresh();
+            EmployeeDetails.Text = "";
         }
     }
 }

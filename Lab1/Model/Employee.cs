@@ -15,12 +15,21 @@ namespace Lab1.Model
         public double skillLevel { get; private set; }
         public ObservableCollection<Employee> subordinates { get; private set; }
 
+        public Employee supervisor { get; set; }
+
         public Employee(string name, int yearOfEmployment, double skillLevel, 
             ObservableCollection<Employee> subordinates) {
             this.name = name;
             this.yearOfEmployment = yearOfEmployment;
             this.skillLevel = skillLevel;
             this.subordinates = subordinates;
+            if(subordinates != null)
+            {
+                foreach(var subordinate in subordinates)
+                {
+                    subordinate.supervisor = this;
+                }
+            }
         }
 
         public override string ToString()
@@ -31,6 +40,7 @@ namespace Lab1.Model
         public void AddSubordinate(Employee subordinate)
         {
             subordinates.Add(subordinate);
+            subordinate.supervisor = this;
         }
 
         public string PrintRecursive(int depth = 0)
