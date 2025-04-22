@@ -27,7 +27,7 @@ namespace Lab1
             EmployeeTreeView.ItemsSource = employees;
         }
 
-        public void GenerateData_Click(object sender, RoutedEventArgs e)
+        private void GenerateData_Click(object sender, RoutedEventArgs e)
         {
             employees.Clear();
 
@@ -76,25 +76,25 @@ namespace Lab1
             employees.Add(ceo);
         }
 
-        public void Version_Click(object sender, RoutedEventArgs e)
+        private void Version_Click(object sender, RoutedEventArgs e)
         {
             var versionWindow = new VersionWindow();
             versionWindow.ShowDialog();
         }
 
-        public void Exit_Click(object sender, RoutedEventArgs e)
+        private void Exit_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
-        public void EmployeeTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) { 
+        private void EmployeeTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) { 
             var selectedEmployee = EmployeeTreeView.SelectedItem as Employee;
             if (selectedEmployee == null) return;
             string employeesText = selectedEmployee.PrintRecursive();
             EmployeeDetails.Text = employeesText;
         }
 
-        public void EmployeeTreeView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        private void EmployeeTreeView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             var src = e.OriginalSource as DependencyObject;
 
@@ -106,7 +106,7 @@ namespace Lab1
 
             if (treeItem == null) return;
             treeItem.Focus();
-            e.Handled = true; // przeciwdzialanie wyswietleni defaultowemu context menu
+            e.Handled = true; // przeciwdzialanie wyswietleniu defaultowemu context menu
 
             var employee = treeItem.DataContext as Employee;
             if (employee == null) return;
@@ -124,7 +124,12 @@ namespace Lab1
 
         public void CreateEmployee(Employee superiorEmployee)
         {
-
+            var createEmployeeWindow = new CreateEmployeeWindow();
+            var result = createEmployeeWindow.ShowDialog();
+            if (result==true)
+            {
+                superiorEmployee.AddSubordinate(createEmployeeWindow.employee);
+            }
         }
 
         public void DeleteEmployee(Employee employee)
