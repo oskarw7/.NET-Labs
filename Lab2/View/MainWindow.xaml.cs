@@ -192,11 +192,12 @@ namespace Lab2.View
 
         public void SerializeEmployees()
         {
-            var xmlSerializer = new XmlSerializer(typeof(List<Employee>));
+            var xmlSerializer = new XmlSerializer(typeof(ObservableCollection<Employee>));
             using(var streamWriter = new StreamWriter("../../../Serialized/employees.xml"))
             {
-                xmlSerializer.Serialize(streamWriter, employees.ToList());
+                xmlSerializer.Serialize(streamWriter, employees);
             }
+            EmployeeDetails.Text = "Data serialized successfully to file employees.xml\n\n";
         }
     }
 }
