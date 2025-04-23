@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Lab1
+namespace Lab1.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
