@@ -7,7 +7,7 @@ namespace Lab2.View
         public VersionWindow()
         {
             InitializeComponent();
-            VersionInfo.Text = "Version 1.0.1, May 2025";
+            VersionInfo.Text = "Version 1.0.2, May 2025";
         }
     }
 }

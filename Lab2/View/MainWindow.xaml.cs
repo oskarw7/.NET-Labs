@@ -86,6 +86,15 @@ namespace Lab2.View
             }
 
             var contextMenu = new ContextMenu();
+
+            var projectItem = new MenuItem { Header = "Execute first query" };
+            projectItem.Click += (s, ev) => ProjectEmployees_Click();
+            contextMenu.Items.Add(projectItem);
+
+            var groupItem = new MenuItem { Header = "Execute second query" };
+            groupItem.Click += (s, ev) => GroupProjectedEmployees_Click();
+            contextMenu.Items.Add(groupItem);
+
             var createItem = new MenuItem { Header = "Create" };
             createItem.Click += (s, ev) => CreateEmployee();
             contextMenu.Items.Add(createItem);
@@ -120,6 +129,59 @@ namespace Lab2.View
             this.employees.Remove(employee);
             EmployeeListView.Items.Refresh();
             EmployeeDetails.Text = "";
+        }
+
+        // w instrukcji jest wypisywanie query w konsoli, ja zmienilem config z WinExe na Exe w .csproj
+        // wyniki byly w konsoli, ale dodatkowe okna (jak formularz) byly puste po pierwszym otwarciu
+        // dlatego wyniki w EmployeeDetails
+        public void ProjectEmployees_Click()
+        {
+            var queryResult = ProjectEmployees();
+
+            EmployeeDetails.Text = "";
+            foreach(var result in queryResult)
+            {
+                string printResult = "SUM_OF =  " + result.SUM_OF + ", UPPERCASE = " + result.UPPERCASE + "\n\n";
+                Console.WriteLine(printResult);
+                EmployeeDetails.Text += printResult;
+            }
+        }
+
+        public void GroupProjectedEmployees_Click()
+        {
+            var queryResult = GroupProjectedEmployees();
+            EmployeeDetails.Text = "";
+            foreach(var result in queryResult)
+            {
+                string printResult = "UPPERCASE = " + result.UPPERCASE + ", AVERAGE_SUM_OF = " + result.AVERAGE_SUM_OF + "\n\n";
+                Console.WriteLine(printResult);
+                EmployeeDetails.Text += printResult;
+            }
+        }
+
+        public IEnumerable<dynamic> ProjectEmployees()
+        {
+            var query = from employee in this.employees
+                        where employee.id % 2 == 1
+                        select new
+                        {
+                            SUM_OF = employee.employeeInfo.skillLevel + employee.employeeInfo.yearOfEmployment,
+                            UPPERCASE = employee.employeeInfo.status.ToString().ToUpper() // raczej dodac pole tekstowe
+                        };
+            return query;
+        }
+
+        public IEnumerable<dynamic> GroupProjectedEmployees()
+        {
+            var projected = ProjectEmployees();
+            var query = from employee in projected
+                        group employee by employee.UPPERCASE into grouped
+                        select new
+                        {
+                            UPPERCASE = grouped.Key,
+                            AVERAGE_SUM_OF = grouped.Average(x => x.SUM_OF)
+                        };
+            return query;
         }
     }
 }
