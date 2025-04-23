@@ -16,9 +16,10 @@ namespace Lab2.Model
 
     public class EmployeeInfo
     {
-        public int yearOfEmployment { get; private set; }
-        public int skillLevel { get; private set; } 
-        public Status status { get; private set; }
+        // deserializacja wymaga publicznych setterów
+        public int yearOfEmployment { get; set; }
+        public int skillLevel { get; set; } 
+        public Status status { get; set; }
 
         public EmployeeInfo(int yearOfEmployment, int skillLevel, Status status)
         {
@@ -27,6 +28,14 @@ namespace Lab2.Model
             else if (skillLevel > 10) this.skillLevel = 10;
             else this.skillLevel = skillLevel;
             this.status = status;
+        }
+
+        // wymog serializacji
+        public EmployeeInfo()
+        {
+            this.yearOfEmployment = 0;
+            this.skillLevel = 0;
+            this.status = Status.Intern;
         }
 
         public override string ToString()

@@ -1,6 +1,7 @@
 ﻿using Lab2.Model;
 using Lab2.View;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Serialization;
 
 namespace Lab2.View
 {
@@ -94,6 +96,10 @@ namespace Lab2.View
             var groupItem = new MenuItem { Header = "Execute second query" };
             groupItem.Click += (s, ev) => GroupProjectedEmployees_Click();
             contextMenu.Items.Add(groupItem);
+
+            var serializeItem = new MenuItem { Header = "Serialize" };
+            serializeItem.Click += (s, ev) => SerializeEmployees();
+            contextMenu.Items.Add(serializeItem);
 
             var createItem = new MenuItem { Header = "Create" };
             createItem.Click += (s, ev) => CreateEmployee();
@@ -182,6 +188,15 @@ namespace Lab2.View
                             AVERAGE_SUM_OF = grouped.Average(x => x.SUM_OF)
                         };
             return query;
+        }
+
+        public void SerializeEmployees()
+        {
+            var xmlSerializer = new XmlSerializer(typeof(List<Employee>));
+            using(var streamWriter = new StreamWriter("../../../Serialized/employees.xml"))
+            {
+                xmlSerializer.Serialize(streamWriter, employees.ToList());
+            }
         }
     }
 }
