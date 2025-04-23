@@ -77,22 +77,28 @@ namespace Lab2.View
             }
             var listItem = src as ListViewItem;
 
-            if (listItem == null) return;
-            listItem.Focus();
-            e.Handled = true; // przeciwdzialanie wyswietleniu defaultowemu context menu
+            Employee? employee = null;
 
-            var employee = listItem.DataContext as Employee;
-            if (employee == null) return;
+            if (listItem != null)
+            {
+                listItem.Focus();
+                employee = listItem.DataContext as Employee;
+            }
 
             var contextMenu = new ContextMenu();
             var createItem = new MenuItem { Header = "Create" };
             createItem.Click += (s, ev) => CreateEmployee();
             contextMenu.Items.Add(createItem);
-            var deleteItem = new MenuItem { Header = "Delete" };
-            deleteItem.Click += (s, ev) => DeleteEmployee(employee);
-            contextMenu.Items.Add(deleteItem);
 
-            listItem.ContextMenu = contextMenu;
+            if (employee != null)
+            {
+                var deleteItem = new MenuItem { Header = "Delete" };
+                deleteItem.Click += (s, ev) => DeleteEmployee(employee);
+                contextMenu.Items.Add(deleteItem);
+            }
+
+            e.Handled = true;           // przeciwdzialanie wyswietleniu defaultowemu context menu
+            contextMenu.IsOpen = true;  // zamiast listItem.ContextMenu, zeby wyswietlic na pustym polu
         }
 
         public void CreateEmployee()
