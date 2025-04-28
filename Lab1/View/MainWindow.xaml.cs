@@ -1,6 +1,7 @@
 ﻿using Lab1.Model;
 using Lab1.View;
 using System.Collections.ObjectModel;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,7 +30,16 @@ namespace Lab1.View
 
         private void GenerateData_Click(object sender, RoutedEventArgs e)
         {
-            employees.Clear();
+            if (employees.Any(emp => emp.name == "Alice" && emp.skillLevel == 9.0 && emp.yearOfEmployment == 2010))
+            {
+                return;
+            }
+
+            if (EmployeeTreeView.ItemsSource is ObservableCollection<Employee> newList)
+            {
+                employees = newList;
+            }
+
 
             var ceoSubordinates = new ObservableCollection<Employee>
             {
@@ -87,7 +97,8 @@ namespace Lab1.View
             Close();
         }
 
-        private void EmployeeTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e) { 
+        private void EmployeeTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
             var selectedEmployee = EmployeeTreeView.SelectedItem as Employee;
             if (selectedEmployee == null) return;
             string employeesText = selectedEmployee.PrintRecursive();
@@ -104,38 +115,72 @@ namespace Lab1.View
             }
             var treeItem = src as TreeViewItem;
 
-            if (treeItem == null) return;
-            treeItem.Focus();
-            e.Handled = true; // przeciwdzialanie wyswietleniu defaultowemu context menu
+            if (treeItem == null)
+            {
+                e.Handled = true;
+                var treeView = sender as TreeView;
 
-            var employee = treeItem.DataContext as Employee;
-            if (employee == null) return;
+                var contextMenu = new ContextMenu();
 
-            var contextMenu = new ContextMenu();
-            var createItem = new MenuItem { Header = "Create" };
-            createItem.Click += (s, ev) => CreateEmployee(employee);
-            contextMenu.Items.Add(createItem);
-            var deleteItem = new MenuItem { Header = "Delete" };
-            deleteItem.Click += (s, ev) => DeleteEmployee(employee);
-            contextMenu.Items.Add(deleteItem);
+                var createItem = new MenuItem { Header = "Create" };
+                createItem.Click += (s, ev) => CreateEmployee();
+                contextMenu.Items.Add(createItem);
 
-            treeItem.ContextMenu = contextMenu;
+                treeView.ContextMenu = contextMenu;
+            }
+            else
+            {
+                treeItem.Focus();
+                e.Handled = true; // przeciwdzialanie wyswietleniu defaultowemu context menu
+
+                var employee = treeItem.DataContext as Employee;
+                if (employee == null) return;
+
+                var contextMenu = new ContextMenu();
+                var createItem = new MenuItem { Header = "Create" };
+                createItem.Click += (s, ev) => CreateEmployee(employee);
+                contextMenu.Items.Add(createItem);
+                var deleteItem = new MenuItem { Header = "Delete" };
+                deleteItem.Click += (s, ev) => DeleteEmployee(employee);
+                contextMenu.Items.Add(deleteItem);
+
+                treeItem.ContextMenu = contextMenu;
+            }
         }
 
         public void CreateEmployee(Employee superiorEmployee)
         {
             var createEmployeeWindow = new CreateEmployeeWindow();
             var result = createEmployeeWindow.ShowDialog();
-            if (result==true)
+            if (result == true)
             {
                 superiorEmployee.AddSubordinate(createEmployeeWindow.employee);
+            }
+        }
+
+        private void CreateEmployee()
+        {
+            var createEmployeeWindow = new CreateEmployeeWindow();
+            var result = createEmployeeWindow.ShowDialog();
+            if (result == true)
+            {
+                if (EmployeeTreeView.ItemsSource is ObservableCollection<Employee> employees)
+                {
+                    employees.Add(createEmployeeWindow.employee);
+                }
+                else
+                {
+                    var newList = new ObservableCollection<Employee>();
+                    newList.Add(createEmployeeWindow.employee);
+                    EmployeeTreeView.ItemsSource = newList;
+                }
             }
         }
 
         public void DeleteEmployee(Employee employee)
         {
             var supervisor = employee.supervisor;
-            if(supervisor == null)
+            if (supervisor == null)
             {
                 employees.Remove(employee);
             }
