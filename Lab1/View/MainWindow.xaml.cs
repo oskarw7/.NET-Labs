@@ -82,12 +82,12 @@ namespace Lab1.View
                 new Employee("Pawel", 2016, 7.5, new ObservableCollection<Employee>())
             };
 
-            var secondRoot = new Employee("Henryk", 2008, 8.0, ceo2Subordinates);
+            var ceo2 = new Employee("Henryk", 2008, 8.0, ceo2Subordinates);
 
             ceo2Subordinates[0].AddSubordinate(new Employee("Basia", 2019, 5.5, new ObservableCollection<Employee>()));
             ceo2Subordinates[1].AddSubordinate(new Employee("Janek", 2020, 6.0, new ObservableCollection<Employee>()));
 
-            employees.Add(secondRoot);
+            employees.Add(ceo2);
         }
 
         private void Version_Click(object sender, RoutedEventArgs e)
