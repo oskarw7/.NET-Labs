@@ -17,21 +17,22 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="24*"/>
+                <ColumnDefinition Width="204*"/>
+                <ColumnDefinition Width="571*"/>
             </Grid.ColumnDefinitions>
 
             <TreeView x:Name="EmployeeTreeView" 
                   Grid.Column="0"
                   SelectedItemChanged="EmployeeTreeView_SelectedItemChanged" 
-                  PreviewMouseRightButtonDown="EmployeeTreeView_PreviewMouseRightButtonDown">
+                  PreviewMouseRightButtonDown="EmployeeTreeView_PreviewMouseRightButtonDown" Grid.ColumnSpan="3" Margin="0,0,571,0">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding subordinates}">
                         <TextBlock Text="{Binding name}"/>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
-            <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
                 <TextBlock x:Name="EmployeeDetails" 
                     Margin="10"
                     TextWrapping="NoWrap"/>
