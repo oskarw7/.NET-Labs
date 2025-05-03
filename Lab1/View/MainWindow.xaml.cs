@@ -30,7 +30,7 @@ namespace Lab1.View
 
         private void GenerateData_Click(object sender, RoutedEventArgs e)
         {
-            employees.Clear();
+            //employees.Clear();
 
             var ceoSubordinates = new ObservableCollection<Employee>
             {
@@ -105,7 +105,7 @@ namespace Lab1.View
         {
             var selectedEmployee = EmployeeTreeView.SelectedItem as Employee;
             if (selectedEmployee == null) return;
-            string employeesText = selectedEmployee.PrintRecursive();
+            string employeesText = selectedEmployee.PrintSingular();
             EmployeeDetails.Text = employeesText;
         }
 

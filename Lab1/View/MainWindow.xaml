@@ -28,14 +28,21 @@
                   PreviewMouseRightButtonDown="EmployeeTreeView_PreviewMouseRightButtonDown" Grid.ColumnSpan="3" Margin="0,0,571,0">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding subordinates}">
-                        <TextBlock Text="{Binding name}"/>
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} (ID: {1})">
+                                    <Binding Path="name"/>
+                                    <Binding Path="id"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
-            <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <TextBlock x:Name="EmployeeDetails" 
                     Margin="10"
-                    TextWrapping="NoWrap"/>
+                    TextWrapping="Wrap"/>
             </ScrollViewer>
         </Grid>
     </DockPanel>
