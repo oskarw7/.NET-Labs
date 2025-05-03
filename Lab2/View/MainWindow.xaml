@@ -27,7 +27,15 @@
                   PreviewMouseRightButtonDown="EmployeeListView_PreviewMouseRightButtonDown">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding name}"/>
+                        <TextBlock>
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} (ID: {1})">
+                                    <Binding Path="name"/>
+                                    <Binding Path="id"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

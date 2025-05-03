@@ -12,7 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Serialization;
+using System.Xml.XPath;
 
 namespace Lab2.View
 {
@@ -100,6 +103,18 @@ namespace Lab2.View
             var serializeItem = new MenuItem { Header = "Serialize" };
             serializeItem.Click += (s, ev) => SerializeEmployees();
             contextMenu.Items.Add(serializeItem);
+
+            var deserializeItem = new MenuItem { Header = "Deserialize" };
+            deserializeItem.Click += (s, ev) => DeserializeEmployees();
+            contextMenu.Items.Add(deserializeItem);
+
+            var yearItem = new MenuItem { Header = "Find unique year in XML" };
+            yearItem.Click += (s, ev) => FindUniqueYearOfEmployment();
+            contextMenu.Items.Add(yearItem);
+
+            var tableItem = new MenuItem { Header = "Generate XHTML table" };
+            tableItem.Click += (s, ev) => GenerateXHTML();
+            contextMenu.Items.Add(tableItem);
 
             var createItem = new MenuItem { Header = "Create" };
             createItem.Click += (s, ev) => CreateEmployee();
@@ -198,6 +213,89 @@ namespace Lab2.View
                 xmlSerializer.Serialize(streamWriter, employees);
             }
             EmployeeDetails.Text = "Data serialized successfully to file employees.xml\n\n";
+        }
+
+        public void DeserializeEmployees()
+        {
+            var xmlSerializer = new XmlSerializer(typeof(ObservableCollection<Employee>));
+            using (var streamReader = new StreamReader("../../../Serialized/employees.xml"))
+            {
+                var deserializeEmployees = xmlSerializer.Deserialize(streamReader);
+                if(deserializeEmployees is ObservableCollection<Employee> validEmployees)
+                {
+                    this.employees.Clear();
+                    foreach(var employee in validEmployees)
+                    {
+                        employee.SetIdFromTime();
+                        this.employees.Add(employee);
+                    }
+                    EmployeeDetails.Text = "Data deserialized successfully from file employees.xml\n\n";
+                }
+                else
+                {
+                    EmployeeDetails.Text = "Error occured while deserializing data\n\n";
+                }
+            }
+            EmployeeListView.Items.Refresh();
+        }
+
+        public void FindUniqueYearOfEmployment()
+        {
+            XElement xmlDocument = XElement.Load("../../../Serialized/employees.xml");
+            IEnumerable<XElement> queryResult = xmlDocument.XPathSelectElements("//Employee[" +
+                "not(employeeInfo/yearOfEmployment = preceding::Employee/employeeInfo/yearOfEmployment)" +
+                "and not(employeeInfo/yearOfEmployment = following::Employee/employeeInfo/yearOfEmployment)]");
+            EmployeeDetails.Text = "Employees with unique year of employment:\n\n";
+            if (!queryResult.Any())
+            {
+                EmployeeDetails.Text += "NONE";
+                return;
+            } 
+            foreach(var result in queryResult)
+            {
+                EmployeeDetails.Text += result.ToString() + "\n\n";
+            }
+        }
+
+        public void GenerateXHTML()
+        {
+            XNamespace xmlns = XNamespace.Get("http://www.w3.org/1999/xhtml");
+            var document = new XDocument(
+                new XDeclaration("1.0", "utf-8", null), // encoding
+                new XDocumentType("html",
+                    "-//W3C//DTD XHTML 1.0 Strict//EN",
+                    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd",
+                    null
+                ), // doctype
+                new XElement(xmlns + "html",
+                    new XElement(xmlns + "head",
+                        new XElement(xmlns + "title", "Table of employees")
+                    ),
+                    new XElement(xmlns + "body",
+                        new XElement(xmlns + "table",
+                            new XAttribute("border", "1"),
+                            new XElement(xmlns + "tr",
+                                new XElement(xmlns + "th", "ID"),
+                                new XElement(xmlns + "th", "Name"),
+                                new XElement(xmlns + "th", "Year of employment"),
+                                new XElement(xmlns + "th", "Skill level"),
+                                new XElement(xmlns + "th", "Status")
+                            ),
+                            this.employees.Select(employee =>
+                                new XElement(xmlns + "tr",
+                                    new XElement(xmlns + "td", employee.id),
+                                    new XElement(xmlns + "td", employee.name),
+                                    new XElement(xmlns + "td", employee.employeeInfo.yearOfEmployment),
+                                    new XElement(xmlns + "td", employee.employeeInfo.skillLevel),
+                                    new XElement(xmlns + "td", employee.employeeInfo.status)
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+            document.Save("../../../Table/table.xhtml");
+            EmployeeDetails.Text = "A table of employees were saved to file table.xhtml";
         }
     }
 }

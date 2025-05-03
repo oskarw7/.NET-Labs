@@ -35,7 +35,7 @@ namespace Lab2.Model
 
         public override string ToString()
         {
-            return "Employee: name = " + name + ", " + employeeInfo;
+            return "Employee: ID: "+ id + ", name = " + name + ", " + employeeInfo;
         }
 
         public void SetIdFromTime()
