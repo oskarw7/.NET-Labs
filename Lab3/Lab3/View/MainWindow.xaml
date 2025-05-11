@@ -1,0 +1,48 @@
+﻿<Window x:Class="Lab2.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lab2"
+        mc:Ignorable="d"
+        Title="Lab2" Height="600" Width="800">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Menu">
+                <MenuItem Header="Generate Data" Click="GenerateData_Click"/>
+                <MenuItem Header="Version" Click="Version_Click"/>
+                <MenuItem Header="Exit" Click="Exit_Click"/>
+            </MenuItem>
+        </Menu>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="4*"/>
+            </Grid.ColumnDefinitions>
+
+            <DataGrid x:Name="EmployeeDataGrid"
+                      SelectionChanged="EmployeeDataGrid_SelectionChanged"
+                      PreviewMouseRightButtonDown="EmployeeDataGrid_PreviewMouseRightButtonDown"
+                      Grid.Column="0"
+                      AutoGenerateColumns="False"
+                      CanUserSortColumns="True"
+                      IsReadOnly="False"
+                      HorizontalAlignment="Left"
+                      Width="333">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding id}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Name" Binding="{Binding name}"/>
+                    <DataGridTextColumn Header="year" Binding="{Binding employeeInfo.yearOfEmployment}"/>
+                    <DataGridTextColumn Header="skill" Binding="{Binding employeeInfo.skillLevel}" />
+                    <DataGridTextColumn Header="status" Binding="{Binding employeeInfo.status}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <TextBlock x:Name="EmployeeDetails" 
+                    Margin="10"
+                    TextWrapping="NoWrap"/>
+            </ScrollViewer>
+        </Grid>
+    </DockPanel>
+</Window>
