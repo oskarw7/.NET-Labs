@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lab2.Model
+namespace Lab3.Model
 {
     public enum Status
     {
@@ -14,11 +14,11 @@ namespace Lab2.Model
         Senior
     }
 
-    public class EmployeeInfo
+    public class EmployeeInfo : IComparable<EmployeeInfo>
     {
         // deserializacja wymaga publicznych setterów
         public int yearOfEmployment { get; set; }
-        public int skillLevel { get; set; } 
+        public int skillLevel { get; set; }
         public Status status { get; set; }
 
         public EmployeeInfo(int yearOfEmployment, int skillLevel, Status status)
@@ -41,6 +41,27 @@ namespace Lab2.Model
         public override string ToString()
         {
             return "year of employment = " + yearOfEmployment + ", skill level = " + skillLevel + ", status = " + status;
+        }
+
+        // wymog icomparable
+        public int CompareTo(EmployeeInfo? other)
+        {
+            if (other == null) return 1;
+
+            int statusCompare = this.status.CompareTo(other.status);
+            if (statusCompare != 0)
+            {
+                return statusCompare;
+            }
+
+            // Drugie porównanie - SkillLevel
+            int skillCompare = this.skillLevel.CompareTo(other.skillLevel);
+            if (skillCompare != 0)
+            {
+                return skillCompare;
+            }
+
+            return this.yearOfEmployment.CompareTo(other.yearOfEmployment);
         }
     }
 }

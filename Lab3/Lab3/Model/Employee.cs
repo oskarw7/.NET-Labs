@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.TextFormatting;
 using System.Xml.Serialization;
 
-namespace Lab2.Model
+namespace Lab3.Model
 {
     public class Employee
     {
@@ -16,10 +16,11 @@ namespace Lab2.Model
         private static int idGenerator = 0;
         [XmlIgnore]
         public int id { get; set; }
-        public string name {  get; set; }
+        public string name { get; set; }
         public EmployeeInfo employeeInfo { get; set; }
 
-        public Employee(string name, EmployeeInfo employeeInfo) {
+        public Employee(string name, EmployeeInfo employeeInfo)
+        {
             this.id = idGenerator++;
             this.name = name;
             this.employeeInfo = employeeInfo;
@@ -35,7 +36,7 @@ namespace Lab2.Model
 
         public override string ToString()
         {
-            return "Employee: ID: "+ id + ", name = " + name + ", " + employeeInfo;
+            return "Employee: ID: " + id + ", name = " + name + ", " + employeeInfo;
         }
 
         public void SetIdFromTime()

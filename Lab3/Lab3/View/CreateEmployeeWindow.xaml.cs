@@ -1,4 +1,4 @@
-﻿using Lab2.Model;
+﻿using Lab3.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 
-namespace Lab2.View
+namespace Lab3.View
 {
     /// <summary>
     /// Interaction logic for CreateEmployeeWindow.xaml
@@ -40,7 +40,7 @@ namespace Lab2.View
             var skill = SkillBox.Text;
             var status = StatusBox.Text;
 
-            if(string.IsNullOrEmpty(name) || string.IsNullOrEmpty(year) || string.IsNullOrEmpty(skill) || string.IsNullOrEmpty(status))
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(year) || string.IsNullOrEmpty(skill) || string.IsNullOrEmpty(status))
             {
                 MessageBox.Show("Please provide all parameters.", "Create", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -51,8 +51,8 @@ namespace Lab2.View
                 MessageBox.Show("Year of employment must be a number.", "Create", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            
-            if(yearNum < 1950 || yearNum > DateTime.Now.Year)
+
+            if (yearNum < 1950 || yearNum > DateTime.Now.Year)
             {
                 MessageBox.Show("Year of employment out of valid range.", "Create", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -64,14 +64,14 @@ namespace Lab2.View
                 return;
             }
 
-            if(skillNum < 0 || skillNum > 10)
+            if (skillNum < 0 || skillNum > 10)
             {
                 MessageBox.Show("Skill level out of valid range.", "Create", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             var statusParsed = mapStatus(status);
-            if(statusParsed == null)
+            if (statusParsed == null)
             {
                 MessageBox.Show("Such status is not allowed.", "Create", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -105,7 +105,7 @@ namespace Lab2.View
 
         private Status? mapStatus(string status)
         {
-            switch(status)
+            switch (status)
             {
                 case "Intern":
                     return Status.Intern;

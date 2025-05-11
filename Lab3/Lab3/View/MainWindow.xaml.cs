@@ -1,23 +1,12 @@
-﻿using Lab2.Model;
-using Lab2.View;
+﻿using Lab3.Model;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.Serialization;
-using System.Xml.XPath;
 
-namespace Lab2.View
+namespace Lab3.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -26,12 +15,31 @@ namespace Lab2.View
     {
         private ObservableCollection<Employee> employees;
         private Random random;
+        private CollectionViewSource collectionViewSource;
         public MainWindow()
         {
             InitializeComponent();
             employees = new ObservableCollection<Employee>();
-            EmployeeDataGrid.ItemsSource = employees;
+
+            collectionViewSource = new CollectionViewSource { Source = employees };
+            collectionViewSource.Filter += CollectionViewSource_Filter;
+
+            EmployeeDataGrid.ItemsSource = collectionViewSource.View;
+
             random = new Random();
+        }
+
+        private void CollectionViewSource_Filter(object sender, FilterEventArgs e)
+        {
+            if (e.Item is not Employee emp)
+            {
+                e.Accepted = false;
+                return;
+            }
+
+            string inputText = SearchTextBox.Text.ToLower();
+
+            e.Accepted = string.IsNullOrWhiteSpace(inputText) || emp.name.ToLower().Contains(inputText);
         }
 
         private void GenerateData_Click(object sender, RoutedEventArgs e)
@@ -127,6 +135,11 @@ namespace Lab2.View
             this.employees.Remove(employee);
             EmployeeDataGrid.Items.Refresh();
             EmployeeDetails.Text = "";
+        }
+
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            collectionViewSource.View.Refresh();
         }
     }
 }

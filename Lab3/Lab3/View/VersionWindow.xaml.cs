@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Lab2.View
+namespace Lab3.View
 {
     public partial class VersionWindow : Window
     {

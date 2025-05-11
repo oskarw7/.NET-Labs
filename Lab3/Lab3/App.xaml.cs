@@ -1,9 +1,9 @@
-﻿using Lab2.View;
+﻿using Lab3.View;
 using System.Configuration;
 using System.Data;
 using System.Windows;
 
-namespace Lab2
+namespace Lab3
 {
     /// <summary>
     /// Interaction logic for App.xaml
