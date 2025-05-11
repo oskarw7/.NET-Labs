@@ -29,8 +29,16 @@
             <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Grid.ColumnSpan="2">
                 <Label Content="Search:" VerticalAlignment="Center"/>
                 <TextBox x:Name="SearchTextBox" Width="285" VerticalAlignment="Center" TextChanged="SearchTextBox_TextChanged"/>
+                <Label Content="Sort by:" VerticalAlignment="Center" Margin="20,0,5,0"/>
+                <ComboBox x:Name="SortComboBox" Width="120" SelectedIndex="0" VerticalAlignment="Center">
+                    <ComboBoxItem Content="Name"/>
+                    <ComboBoxItem Content="Year"/>
+                    <ComboBoxItem Content="Skill"/>
+                    <ComboBoxItem Content="Status"/>
+                </ComboBox>
+                <Button Content="Sort" Click="SortButton_Click" Margin="10,0,0,0"/>
             </StackPanel>
-
+            
             <DataGrid x:Name="EmployeeDataGrid"
                       SelectionChanged="EmployeeDataGrid_SelectionChanged"
                       PreviewMouseRightButtonDown="EmployeeDataGrid_PreviewMouseRightButtonDown"
@@ -49,10 +57,10 @@
                     <DataGridTextColumn Header="status" Binding="{Binding employeeInfo.status}"/>
                 </DataGrid.Columns>
             </DataGrid>
-            <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.RowSpan="2">
+            <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,5,0,0" Grid.Row="1">
                 <TextBlock x:Name="EmployeeDetails" 
                            Margin="10"
-                           TextWrapping="NoWrap"/>
+                           TextWrapping="NoWrap" Height="461"/>
             </ScrollViewer>
         </Grid>
     </DockPanel>

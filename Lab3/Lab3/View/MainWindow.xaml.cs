@@ -13,13 +13,13 @@ namespace Lab3.View
     /// </summary>
     public partial class MainWindow : Window
     {
-        private ObservableCollection<Employee> employees;
+        private SortableSearchableCollection<Employee> employees;
         private Random random;
         private CollectionViewSource collectionViewSource;
         public MainWindow()
         {
             InitializeComponent();
-            employees = new ObservableCollection<Employee>();
+            employees = new SortableSearchableCollection<Employee>();
 
             collectionViewSource = new CollectionViewSource { Source = employees };
             collectionViewSource.Filter += CollectionViewSource_Filter;
@@ -115,6 +115,30 @@ namespace Lab3.View
             e.Handled = true;           // przeciwdzialanie wyswietleniu defaultowemu context menu
             contextMenu.IsOpen = true;  // zamiast listItem.ContextMenu, zeby wyswietlic na pustym polu
         }
+        private void SortButton_Click(object sender, RoutedEventArgs e)
+        {
+            string selected = (SortComboBox.SelectedItem as ComboBoxItem)?.Content as string;
+
+            switch (selected)
+            {
+                case "Name":
+                    employees.SortBy(emp => emp.name);
+                    break;
+                case "Year":
+                    employees.SortBy(emp => emp.employeeInfo.yearOfEmployment);
+                    break;
+                case "Skill":
+                    employees.SortBy(emp => emp.employeeInfo.skillLevel);
+                    break;
+                case "Status":
+                    employees.SortBy(emp => emp.employeeInfo.status.ToString());
+                    break;
+                default:
+                    return;
+            }
+
+            collectionViewSource.View.Refresh();  // Refresh the DataGrid
+        }
 
         public void CreateEmployee()
         {
@@ -139,7 +163,14 @@ namespace Lab3.View
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            collectionViewSource.View.Refresh();
+            //collectionViewSource.View.Refresh();
+            string input = SearchTextBox.Text.ToLower();
+
+            employees.SearchBy(emp =>
+            string.IsNullOrWhiteSpace(input) ||
+            emp.name.ToLower().Contains(input) ||
+            emp.employeeInfo.status.ToString().ToLower().Contains(input)
+            );
         }
     }
 }

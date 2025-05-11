@@ -40,7 +40,7 @@ namespace Lab3.Model
 
         public override string ToString()
         {
-            return "year of employment = " + yearOfEmployment + ", skill level = " + skillLevel + ", status = " + status;
+            return "year of employment = " + yearOfEmployment + ",\n skill level = " + skillLevel + ", status = " + status;
         }
 
         // wymog icomparable
