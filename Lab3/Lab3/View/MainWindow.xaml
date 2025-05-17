@@ -35,10 +35,11 @@
                     <ComboBoxItem Content="Year"/>
                     <ComboBoxItem Content="Skill"/>
                     <ComboBoxItem Content="Status"/>
+                    <ComboBoxItem Content="EmployeeInfo"/>
                 </ComboBox>
                 <Button Content="Sort" Click="SortButton_Click" Margin="10,0,0,0"/>
             </StackPanel>
-            
+
             <DataGrid x:Name="EmployeeDataGrid"
                       SelectionChanged="EmployeeDataGrid_SelectionChanged"
                       PreviewMouseRightButtonDown="EmployeeDataGrid_PreviewMouseRightButtonDown"

@@ -22,7 +22,7 @@ namespace Lab3.View
             employees = new SortableSearchableCollection<Employee>();
 
             collectionViewSource = new CollectionViewSource { Source = employees };
-            collectionViewSource.Filter += CollectionViewSource_Filter;
+            //collectionViewSource.Filter += CollectionViewSource_Filter;
 
             EmployeeDataGrid.ItemsSource = collectionViewSource.View;
 
@@ -168,11 +168,14 @@ namespace Lab3.View
         {
             //collectionViewSource.View.Refresh();
             string input = SearchTextBox.Text.ToLower();
+            bool success = int.TryParse(input, out int inp);
 
             employees.SearchBy(emp =>
             string.IsNullOrWhiteSpace(input) ||
             emp.name.ToLower().Contains(input) ||
-            emp.employeeInfo.status.ToString().ToLower().Contains(input)
+            emp.employeeInfo.status.ToString().ToLower().Contains(input) ||
+            emp.employeeInfo.skillLevel.Equals(inp) ||
+            emp.employeeInfo.yearOfEmployment.Equals(inp)
             );
         }
     }
