@@ -14,7 +14,7 @@ namespace Lab3.Model
         Senior
     }
 
-    public class EmployeeInfo : IComparable<EmployeeInfo>
+    public class EmployeeInfo : IComparable<EmployeeInfo>, IComparable
     {
         // deserializacja wymaga publicznych setterów
         public int yearOfEmployment { get; set; }
@@ -54,14 +54,16 @@ namespace Lab3.Model
                 return statusCompare;
             }
 
-            // Drugie porównanie - SkillLevel
-            int skillCompare = this.skillLevel.CompareTo(other.skillLevel);
-            if (skillCompare != 0)
-            {
-                return skillCompare;
-            }
-
+            // default 
             return this.yearOfEmployment.CompareTo(other.yearOfEmployment);
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj == null) return 1;
+            if (obj is EmployeeInfo other)
+                return CompareTo(other);
+            throw new ArgumentException("Object is not an EmployeeInfo");
         }
     }
 }

@@ -22,9 +22,14 @@ namespace Lab3.Model
             }
 
         }
-        public List<T> SearchBy<K>(Func<T, K> selector, K value)
+        public void SearchBy(Func<T, bool> predicate)
         {
-            return this.Where(item => selector(item)?.Equals(value) == true).ToList();
+            this.Clear();
+            foreach (var item in this.Where(predicate).ToList())
+            {
+                this.Add(item);
+            }
         }
+
     }
 }

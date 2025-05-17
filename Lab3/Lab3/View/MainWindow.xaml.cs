@@ -117,7 +117,7 @@ namespace Lab3.View
         }
         private void SortButton_Click(object sender, RoutedEventArgs e)
         {
-            string selected = (SortComboBox.SelectedItem as ComboBoxItem)?.Content as string;
+            string? selected = (SortComboBox.SelectedItem as ComboBoxItem)?.Content as string;
 
             switch (selected)
             {
@@ -133,11 +133,14 @@ namespace Lab3.View
                 case "Status":
                     employees.SortBy(emp => emp.employeeInfo.status.ToString());
                     break;
+                case "EmployeeInfo":
+                    employees.SortBy(emp => emp.employeeInfo);
+                    break;
                 default:
                     return;
             }
 
-            collectionViewSource.View.Refresh();  // Refresh the DataGrid
+            collectionViewSource.View.Refresh();
         }
 
         public void CreateEmployee()
