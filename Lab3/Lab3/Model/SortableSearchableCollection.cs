@@ -11,7 +11,7 @@ namespace Lab3.Model
     //klasa ma byc uniwersalna 
     public class SortableSearchableCollection<T> : ObservableCollection<T>
     {
-        public List<T> originalItems = new List<T> { };
+        private List<T> originalItems = new List<T> { };
         public void SortBy<K>(Func<T, K> keySelector) where K : IComparable
         {
             var sorted = this.OrderBy(keySelector).ToList();
@@ -32,13 +32,29 @@ namespace Lab3.Model
             }
         }
 
-        public void Revert()
+        public void SaveOriginal()
+        {
+            this.originalItems.Clear();
+            this.originalItems = this.ToList();
+        }
+
+        public void RevertOriginal()
         {
             this.Clear();
             foreach (var item in originalItems.ToList())
             {
                 this.Add(item);
             }
+        }
+
+        public void AddToOriginal(T item)
+        {
+            this.originalItems.Add(item);
+        }
+
+        public void RemoveFromOriginal(T item)
+        {
+            this.originalItems.Remove(item);
         }
     }
 }

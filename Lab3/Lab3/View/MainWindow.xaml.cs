@@ -22,7 +22,6 @@ namespace Lab3.View
         {
             InitializeComponent();
             employees = new SortableSearchableCollection<Employee>();
-            employees.originalItems = new List<Employee>();
 
             collectionViewSource = new CollectionViewSource { Source = employees };
 
@@ -49,7 +48,7 @@ namespace Lab3.View
 
                 employees.Add(employee);
             }
-            employees.originalItems = employees.ToList();
+            employees.SaveOriginal();
 
             collectionViewSource.View.Refresh();
         }
@@ -143,7 +142,7 @@ namespace Lab3.View
 
             if (result == true)
             {
-                employees.originalItems.Add(createEmployeeWindow.employee);
+                employees.AddToOriginal(createEmployeeWindow.employee);
                 employees.Add(createEmployeeWindow.employee);
             }
         }
@@ -155,7 +154,7 @@ namespace Lab3.View
                 return;
             }
 
-            employees.originalItems.Remove(employee);
+            employees.RemoveFromOriginal(employee);
             employees.Remove(employee);
 
             EmployeeDataGrid.Items.Refresh();
@@ -180,7 +179,7 @@ namespace Lab3.View
         {
             SearchValueTextBox.Clear();
             PropertyComboBox.SelectedItem = null;
-            employees.Revert();
+            employees.RevertOriginal();
             collectionViewSource.View.Refresh();
         }
 
