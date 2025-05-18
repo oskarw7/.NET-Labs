@@ -1,5 +1,6 @@
 ﻿using Lab3.Model;
 using System.Collections.ObjectModel;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -13,38 +14,27 @@ namespace Lab3.View
     /// </summary>
     public partial class MainWindow : Window
     {
-        private SortableSearchableCollection<Employee> employees;
         private Random random;
         private CollectionViewSource collectionViewSource;
+        private List<Employee> allEmployees = new();
+        private SortableSearchableCollection<Employee> employees = new(); // UI-bound filtered list
+
         public MainWindow()
         {
             InitializeComponent();
             employees = new SortableSearchableCollection<Employee>();
 
             collectionViewSource = new CollectionViewSource { Source = employees };
-            //collectionViewSource.Filter += CollectionViewSource_Filter;
 
             EmployeeDataGrid.ItemsSource = collectionViewSource.View;
 
             random = new Random();
         }
 
-        private void CollectionViewSource_Filter(object sender, FilterEventArgs e)
-        {
-            if (e.Item is not Employee emp)
-            {
-                e.Accepted = false;
-                return;
-            }
-
-            string inputText = SearchTextBox.Text.ToLower();
-
-            e.Accepted = string.IsNullOrWhiteSpace(inputText) || emp.name.ToLower().Contains(inputText);
-        }
-
         private void GenerateData_Click(object sender, RoutedEventArgs e)
         {
             employees.Clear();
+            allEmployees.Clear();
 
             var names = CreateEmployeeWindow.names;
             var statuses = Enum.GetValues(typeof(Status)).Cast<Status>().ToArray();
@@ -58,9 +48,13 @@ namespace Lab3.View
                 var employeeInfo = new EmployeeInfo(yearOfEmployment, skillLevel, status);
                 var employee = new Employee(name, employeeInfo);
 
+                allEmployees.Add(employee);
                 employees.Add(employee);
             }
+
+            collectionViewSource.View.Refresh();
         }
+
 
         private void Version_Click(object sender, RoutedEventArgs e)
         {
@@ -178,5 +172,89 @@ namespace Lab3.View
             emp.employeeInfo.yearOfEmployment.Equals(inp)
             );
         }
+
+        private void Reset_Click(object sender, RoutedEventArgs e)
+        {
+            SearchValueTextBox.Clear();
+            PropertyComboBox.SelectedItem = null;
+            collectionViewSource.View.Refresh();
+        }
+
+
+        private void PropertyComboBox_DropDownOpened(object sender, EventArgs e)
+        {
+            if (PropertyComboBox.Items.Count > 0 || employees.Count == 0)
+                return;
+
+            PropertyComboBox.Items.Clear();
+
+            var empProps = typeof(Employee).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.PropertyType == typeof(string) || p.PropertyType == typeof(int) || p.PropertyType == typeof(Int32));
+
+            foreach (var prop in empProps)
+            {
+                PropertyComboBox.Items.Add(prop.Name);
+            }
+
+            var infoProps = typeof(EmployeeInfo).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.PropertyType == typeof(string) || p.PropertyType == typeof(int) || p.PropertyType == typeof(Int32));
+
+            foreach (var prop in infoProps)
+            {
+                PropertyComboBox.Items.Add($"employeeInfo.{prop.Name}");
+            }
+        }
+
+
+        private void GenericSearch_Click(object sender, RoutedEventArgs e)
+        {
+            string? selectedProp = PropertyComboBox.SelectedItem as string;
+            string input = SearchValueTextBox.Text;
+
+            if (string.IsNullOrWhiteSpace(selectedProp) || string.IsNullOrWhiteSpace(input))
+                return;
+
+            employees.Clear();
+
+            foreach (var emp in allEmployees)
+            {
+                object? value = null;
+
+                if (selectedProp.StartsWith("employeeInfo."))
+                {
+                    var subProp = selectedProp.Split('.')[1];
+                    var infoProp = typeof(EmployeeInfo).GetProperty(subProp);
+                    value = infoProp?.GetValue(emp.employeeInfo);
+                }
+                else
+                {
+                    var empProp = typeof(Employee).GetProperty(selectedProp);
+                    value = empProp?.GetValue(emp);
+                }
+
+                if (value == null) continue;
+
+                bool match = false;
+
+                if (value is string s)
+                {
+                    match = s.Contains(input, StringComparison.OrdinalIgnoreCase);
+                }
+                else if (value is int i)
+                {
+                    if (int.TryParse(input, out int inputInt))
+                        match = i == inputInt;
+                }
+
+                if (match)
+                {
+                    employees.Add(emp);
+                }
+            }
+
+            collectionViewSource.View.Refresh();
+        }
+
+
     }
 }
