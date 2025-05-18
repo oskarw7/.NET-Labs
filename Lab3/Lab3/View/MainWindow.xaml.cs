@@ -16,13 +16,13 @@ namespace Lab3.View
     {
         private Random random;
         private CollectionViewSource collectionViewSource;
-        private List<Employee> allEmployees = new();
-        private SortableSearchableCollection<Employee> employees = new(); // UI-bound filtered list
+        private SortableSearchableCollection<Employee> employees;
 
         public MainWindow()
         {
             InitializeComponent();
             employees = new SortableSearchableCollection<Employee>();
+            employees.originalItems = new List<Employee>();
 
             collectionViewSource = new CollectionViewSource { Source = employees };
 
@@ -34,7 +34,6 @@ namespace Lab3.View
         private void GenerateData_Click(object sender, RoutedEventArgs e)
         {
             employees.Clear();
-            allEmployees.Clear();
 
             var names = CreateEmployeeWindow.names;
             var statuses = Enum.GetValues(typeof(Status)).Cast<Status>().ToArray();
@@ -48,9 +47,9 @@ namespace Lab3.View
                 var employeeInfo = new EmployeeInfo(yearOfEmployment, skillLevel, status);
                 var employee = new Employee(name, employeeInfo);
 
-                allEmployees.Add(employee);
                 employees.Add(employee);
             }
+            employees.originalItems = employees.ToList();
 
             collectionViewSource.View.Refresh();
         }
@@ -141,9 +140,11 @@ namespace Lab3.View
         {
             var createEmployeeWindow = new CreateEmployeeWindow();
             var result = createEmployeeWindow.ShowDialog();
+
             if (result == true)
             {
-                this.employees.Add(createEmployeeWindow.employee);
+                employees.originalItems.Add(createEmployeeWindow.employee);
+                employees.Add(createEmployeeWindow.employee);
             }
         }
 
@@ -153,23 +154,25 @@ namespace Lab3.View
             {
                 return;
             }
-            this.employees.Remove(employee);
+
+            employees.originalItems.Remove(employee);
+            employees.Remove(employee);
+
             EmployeeDataGrid.Items.Refresh();
             EmployeeDetails.Text = "";
         }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            //collectionViewSource.View.Refresh();
             string input = SearchTextBox.Text.ToLower();
             bool success = int.TryParse(input, out int inp);
 
             employees.SearchBy(emp =>
-            string.IsNullOrWhiteSpace(input) ||
-            emp.name.ToLower().Contains(input) ||
-            emp.employeeInfo.status.ToString().ToLower().Contains(input) ||
-            emp.employeeInfo.skillLevel.Equals(inp) ||
-            emp.employeeInfo.yearOfEmployment.Equals(inp)
+                string.IsNullOrWhiteSpace(input) ||
+                emp.name.ToLower().Contains(input) ||
+                emp.employeeInfo.status.ToString().ToLower().Contains(input) ||
+                emp.employeeInfo.skillLevel.Equals(inp) ||
+                emp.employeeInfo.yearOfEmployment.Equals(inp)
             );
         }
 
@@ -177,30 +180,38 @@ namespace Lab3.View
         {
             SearchValueTextBox.Clear();
             PropertyComboBox.SelectedItem = null;
+            employees.Revert();
             collectionViewSource.View.Refresh();
         }
 
 
-        private void PropertyComboBox_DropDownOpened(object sender, EventArgs e)
+        private void PropertyComboBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (PropertyComboBox.Items.Count > 0 || employees.Count == 0)
+            // enter
+            if (e.Key != Key.Enter)
+                return;
+
+            if (PropertyComboBox.Items.Count > 0)
                 return;
 
             PropertyComboBox.Items.Clear();
 
+            // employee
             var empProps = typeof(Employee).GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.PropertyType == typeof(string) || p.PropertyType == typeof(int) || p.PropertyType == typeof(Int32));
+                .Where(p => p.PropertyType == typeof(string) || p.PropertyType == typeof(int));
 
             foreach (var prop in empProps)
             {
                 PropertyComboBox.Items.Add(prop.Name);
             }
 
+            // employee info
             var infoProps = typeof(EmployeeInfo).GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(p => p.PropertyType == typeof(string) || p.PropertyType == typeof(int) || p.PropertyType == typeof(Int32));
+                .Where(p => p.PropertyType == typeof(string) || p.PropertyType == typeof(int));
 
             foreach (var prop in infoProps)
             {
+                // mozna zamienic na po prostu prop.Name
                 PropertyComboBox.Items.Add($"employeeInfo.{prop.Name}");
             }
         }
@@ -211,46 +222,39 @@ namespace Lab3.View
             string? selectedProp = PropertyComboBox.SelectedItem as string;
             string input = SearchValueTextBox.Text;
 
-            if (string.IsNullOrWhiteSpace(selectedProp) || string.IsNullOrWhiteSpace(input))
+            if (string.IsNullOrWhiteSpace(selectedProp))
+            {
+                MessageBox.Show("Wybierz własność.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
+            }
 
-            employees.Clear();
 
-            foreach (var emp in allEmployees)
+
+            employees.SearchBy(emp =>
             {
                 object? value = null;
 
                 if (selectedProp.StartsWith("employeeInfo."))
                 {
                     var subProp = selectedProp.Split('.')[1];
-                    var infoProp = typeof(EmployeeInfo).GetProperty(subProp);
+                    var infoProp = typeof(EmployeeInfo).GetProperty(subProp, BindingFlags.Public | BindingFlags.Instance);
                     value = infoProp?.GetValue(emp.employeeInfo);
                 }
                 else
                 {
-                    var empProp = typeof(Employee).GetProperty(selectedProp);
+                    var empProp = typeof(Employee).GetProperty(selectedProp, BindingFlags.Public | BindingFlags.Instance);
                     value = empProp?.GetValue(emp);
                 }
 
-                if (value == null) continue;
-
-                bool match = false;
+                if (value == null) return string.IsNullOrWhiteSpace(input);
 
                 if (value is string s)
-                {
-                    match = s.Contains(input, StringComparison.OrdinalIgnoreCase);
-                }
-                else if (value is int i)
-                {
-                    if (int.TryParse(input, out int inputInt))
-                        match = i == inputInt;
-                }
+                    return s.Contains(input, StringComparison.OrdinalIgnoreCase);
+                if (value is int i && int.TryParse(input, out int inputInt))
+                    return i == inputInt;
 
-                if (match)
-                {
-                    employees.Add(emp);
-                }
-            }
+                return string.IsNullOrWhiteSpace(input);
+            });
 
             collectionViewSource.View.Refresh();
         }

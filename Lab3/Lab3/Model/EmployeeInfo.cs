@@ -62,7 +62,7 @@ namespace Lab3.Model
         {
             if (obj == null) return 1;
             if (obj is EmployeeInfo other)
-                return CompareTo(other);
+                return this.CompareTo(other);
             throw new ArgumentException("Object is not an EmployeeInfo");
         }
     }

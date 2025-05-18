@@ -5,9 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lab3"
         mc:Ignorable="d"
-        Title="Lab2" Height="600" Width="800">
+        Title="Lab3" Height="600" Width="800">
     <DockPanel>
-        <!-- MENU -->
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="Menu">
                 <MenuItem Header="Generate Data" Click="GenerateData_Click"/>
@@ -16,22 +15,19 @@
             </MenuItem>
         </Menu>
 
-        <!-- TOOLBAR -->
         <ToolBar DockPanel.Dock="Top">
             <Label Content="Property:" VerticalAlignment="Center"/>
             <ComboBox x:Name="PropertyComboBox"
                       Width="150"
-                      DropDownOpened="PropertyComboBox_DropDownOpened"
+                      PreviewKeyDown="PropertyComboBox_KeyDown"
                       ToolTip="Wciśnij Enter, aby załadować właściwości" />
-            <Label Content="Value:" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <Label Content="Value:" VerticalAlignment="Center"/>
             <TextBox x:Name="SearchValueTextBox"
                      Width="150"
                      ToolTip="Wpisz wartość do wyszukania" />
             <Button Content="Search"
-                    Margin="10,0,0,0"
                     Click="GenericSearch_Click" />
             <Button Content="Reset"
-                    Margin="5,0,0,0"
                     Click="Reset_Click" />
         </ToolBar>
 
@@ -48,7 +44,7 @@
             <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Grid.ColumnSpan="2">
                 <Label Content="Search:" VerticalAlignment="Center"/>
                 <TextBox x:Name="SearchTextBox" Width="285" VerticalAlignment="Center" TextChanged="SearchTextBox_TextChanged"/>
-                <Label Content="Sort by:" VerticalAlignment="Center" Margin="20,0,5,0"/>
+                <Label Content="Sort by:" VerticalAlignment="Center"/>
                 <ComboBox x:Name="SortComboBox" Width="120" SelectedIndex="0" VerticalAlignment="Center">
                     <ComboBoxItem Content="Name"/>
                     <ComboBoxItem Content="Year"/>
@@ -56,7 +52,7 @@
                     <ComboBoxItem Content="Status"/>
                     <ComboBoxItem Content="EmployeeInfo"/>
                 </ComboBox>
-                <Button Content="Sort" Click="SortButton_Click" Margin="10,0,0,0"/>
+                <Button Content="Sort" Click="SortButton_Click"/>
             </StackPanel>
 
             <DataGrid x:Name="EmployeeDataGrid"
@@ -68,7 +64,8 @@
                       CanUserSortColumns="True"
                       IsReadOnly="False"
                       HorizontalAlignment="Left"
-                      Width="333">
+                      HorizontalScrollBarVisibility="Disabled"
+                      ColumnWidth="Auto">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="ID" Binding="{Binding id}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="Name" Binding="{Binding name}"/>
