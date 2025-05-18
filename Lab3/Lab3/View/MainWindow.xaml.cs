@@ -15,7 +15,6 @@ namespace Lab3.View
     public partial class MainWindow : Window
     {
         private Random random;
-        private CollectionViewSource collectionViewSource;
         private SortableSearchableCollection<Employee> employees;
 
         public MainWindow()
@@ -23,9 +22,7 @@ namespace Lab3.View
             InitializeComponent();
             employees = new SortableSearchableCollection<Employee>();
 
-            collectionViewSource = new CollectionViewSource { Source = employees };
-
-            EmployeeDataGrid.ItemsSource = collectionViewSource.View;
+            EmployeeDataGrid.ItemsSource = employees;
 
             random = new Random();
         }
@@ -49,8 +46,6 @@ namespace Lab3.View
                 employees.Add(employee);
             }
             employees.SaveOriginal();
-
-            collectionViewSource.View.Refresh();
         }
 
 
@@ -131,8 +126,6 @@ namespace Lab3.View
                 default:
                     return;
             }
-
-            collectionViewSource.View.Refresh();
         }
 
         public void CreateEmployee()
@@ -180,7 +173,6 @@ namespace Lab3.View
             SearchValueTextBox.Clear();
             PropertyComboBox.SelectedItem = null;
             employees.RevertOriginal();
-            collectionViewSource.View.Refresh();
         }
 
 
@@ -227,8 +219,6 @@ namespace Lab3.View
                 return;
             }
 
-
-
             employees.SearchBy(emp =>
             {
                 object? value = null;
@@ -254,10 +244,6 @@ namespace Lab3.View
 
                 return string.IsNullOrWhiteSpace(input);
             });
-
-            collectionViewSource.View.Refresh();
         }
-
-
     }
 }
