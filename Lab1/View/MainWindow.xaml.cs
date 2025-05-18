@@ -30,16 +30,7 @@ namespace Lab1.View
 
         private void GenerateData_Click(object sender, RoutedEventArgs e)
         {
-            if (employees.Any(emp => emp.name == "Alice" && emp.skillLevel == 9.0 && emp.yearOfEmployment == 2010))
-            {
-                return;
-            }
-
-            if (EmployeeTreeView.ItemsSource is ObservableCollection<Employee> newList)
-            {
-                employees = newList;
-            }
-
+            //employees.Clear();
 
             var ceoSubordinates = new ObservableCollection<Employee>
             {
@@ -84,6 +75,19 @@ namespace Lab1.View
             ceoSubordinates[4].AddSubordinate(new Employee("Zuzanna", 2021, 4.0, subordinatesOfEwa));
 
             employees.Add(ceo);
+
+            var ceo2Subordinates = new ObservableCollection<Employee>
+            {
+                new Employee("Ola", 2017, 6.5, new ObservableCollection<Employee>()),
+                new Employee("Pawel", 2016, 7.5, new ObservableCollection<Employee>())
+            };
+
+            var ceo2 = new Employee("Henryk", 2008, 8.0, ceo2Subordinates);
+
+            ceo2Subordinates[0].AddSubordinate(new Employee("Basia", 2019, 5.5, new ObservableCollection<Employee>()));
+            ceo2Subordinates[1].AddSubordinate(new Employee("Janek", 2020, 6.0, new ObservableCollection<Employee>()));
+
+            employees.Add(ceo2);
         }
 
         private void Version_Click(object sender, RoutedEventArgs e)
@@ -101,7 +105,7 @@ namespace Lab1.View
         {
             var selectedEmployee = EmployeeTreeView.SelectedItem as Employee;
             if (selectedEmployee == null) return;
-            string employeesText = selectedEmployee.PrintRecursive();
+            string employeesText = selectedEmployee.PrintSingular();
             EmployeeDetails.Text = employeesText;
         }
 

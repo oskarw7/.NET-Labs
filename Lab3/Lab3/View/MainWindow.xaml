@@ -1,0 +1,85 @@
+﻿<Window x:Class="Lab3.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Lab3"
+        mc:Ignorable="d"
+        Title="Lab3" Height="600" Width="800">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Menu">
+                <MenuItem Header="Generate Data" Click="GenerateData_Click"/>
+                <MenuItem Header="Version" Click="Version_Click"/>
+                <MenuItem Header="Exit" Click="Exit_Click"/>
+            </MenuItem>
+        </Menu>
+
+        <ToolBar DockPanel.Dock="Top">
+            <Label Content="Property:" VerticalAlignment="Center"/>
+            <ComboBox x:Name="PropertyComboBox"
+                      Width="150"
+                      PreviewKeyDown="PropertyComboBox_KeyDown"
+                      ToolTip="Wciśnij Enter, aby załadować właściwości" />
+            <Label Content="Value:" VerticalAlignment="Center"/>
+            <TextBox x:Name="SearchValueTextBox"
+                     Width="150"
+                     ToolTip="Wpisz wartość do wyszukania" />
+            <Button Content="Search"
+                    Click="GenericSearch_Click" />
+            <Button Content="Reset"
+                    Click="Reset_Click" />
+        </ToolBar>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="26*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="4*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Grid.ColumnSpan="2">
+                <Label Content="Search:" VerticalAlignment="Center"/>
+                <TextBox x:Name="SearchTextBox" Width="285" VerticalAlignment="Center" TextChanged="SearchTextBox_TextChanged"/>
+                <Label Content="Sort by:" VerticalAlignment="Center"/>
+                <ComboBox x:Name="SortComboBox" Width="120" SelectedIndex="0" VerticalAlignment="Center">
+                    <ComboBoxItem Content="Name"/>
+                    <ComboBoxItem Content="Year"/>
+                    <ComboBoxItem Content="Skill"/>
+                    <ComboBoxItem Content="Status"/>
+                    <ComboBoxItem Content="EmployeeInfo"/>
+                </ComboBox>
+                <Button Content="Sort" Click="SortButton_Click"/>
+            </StackPanel>
+
+            <DataGrid x:Name="EmployeeDataGrid"
+                      SelectionChanged="EmployeeDataGrid_SelectionChanged"
+                      PreviewMouseRightButtonDown="EmployeeDataGrid_PreviewMouseRightButtonDown"
+                      Grid.Column="0"
+                      Grid.Row="1"
+                      AutoGenerateColumns="False"
+                      CanUserSortColumns="True"
+                      IsReadOnly="False"
+                      HorizontalAlignment="Left"
+                      HorizontalScrollBarVisibility="Disabled"
+                      ColumnWidth="Auto">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding id}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Name" Binding="{Binding name}"/>
+                    <DataGridTextColumn Header="year" Binding="{Binding employeeInfo.yearOfEmployment}"/>
+                    <DataGridTextColumn Header="skill" Binding="{Binding employeeInfo.skillLevel}"/>
+                    <DataGridTextColumn Header="status" Binding="{Binding employeeInfo.status}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0,5,0,0" Grid.Row="1">
+                <TextBlock x:Name="EmployeeDetails" 
+                           Margin="10"
+                           TextWrapping="NoWrap" Height="461"/>
+            </ScrollViewer>
+        </Grid>
+    </DockPanel>
+</Window>
