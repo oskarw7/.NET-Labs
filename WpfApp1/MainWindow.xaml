@@ -1,0 +1,31 @@
+﻿<Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="Fibonacci Threading Demo" Height="450" Width="800">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Buttons -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
+            <Button x:Name="btnStartTask" Content="Start - Task" Width="120" Margin="5" Click="btnStartTask_Click"/>
+            <Button x:Name="btnStartDelegate" Content="Start - Delegate" Width="120" Margin="5" Click="btnStartDelegate_Click"/>
+            <Button x:Name="btnStartAsyncAwait" Content="Start - Async/Await" Width="120" Margin="5" Click="btnStartAsyncAwait_Click"/>
+            <Button x:Name="btnStartBackground" Content="Start - BackgroundWorker" Width="160" Margin="5" Click="btnStartBackground_Click"/>
+        </StackPanel>
+
+        <!-- Log Output -->
+        <ListBox x:Name="listBoxLog" Grid.Row="1" Margin="0,0,0,10" FontFamily="Consolas" FontSize="12"/>
+
+        <!-- ProgressBar -->
+        <ProgressBar x:Name="progressBar" Grid.Row="2" Height="25" Minimum="0" Maximum="100" Margin="0,10,0,0"/>
+    </Grid>
+</Window>
