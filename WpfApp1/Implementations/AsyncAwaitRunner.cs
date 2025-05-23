@@ -16,14 +16,15 @@ namespace WpfApp1.Implementations
         public AsyncAwaitRunner(FibonacciTaskManager m, Action progressUpdate) =>
             (manager, updateProgress) = (m, progressUpdate);
 
-        public async void Start(int threadCount)
+        public async void Start(int threadCount, CancellationToken token)
         {
             List<Task> tasks = new List<Task>();
+
             for (int i = 0; i < threadCount; i++)
             {
                 tasks.Add(Task.Run(async () =>
                 {
-                    while (true)
+                    while (!token.IsCancellationRequested)
                     {
                         long task = manager.GetNextTask();
                         if (task == -1) break;
@@ -39,5 +40,4 @@ namespace WpfApp1.Implementations
             await Task.WhenAll(tasks);
         }
     }
-
 }

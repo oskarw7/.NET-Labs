@@ -14,12 +14,12 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Buttons -->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
             <Button x:Name="btnStartTask" Content="Start - Task" Width="120" Margin="5" Click="btnStartTask_Click"/>
             <Button x:Name="btnStartDelegate" Content="Start - Delegate" Width="120" Margin="5" Click="btnStartDelegate_Click"/>
             <Button x:Name="btnStartAsyncAwait" Content="Start - Async/Await" Width="120" Margin="5" Click="btnStartAsyncAwait_Click"/>
             <Button x:Name="btnStartBackground" Content="Start - BackgroundWorker" Width="160" Margin="5" Click="btnStartBackground_Click"/>
+            <Button x:Name="btnReset" Content="Reset app" Click="btnReset_Click"/>
         </StackPanel>
 
         <!-- Log Output -->

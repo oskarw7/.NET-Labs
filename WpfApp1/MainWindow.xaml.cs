@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,21 +25,21 @@ namespace WpfApp1
     public partial class MainWindow : Window
     {
         private FibonacciTaskManager manager;
+        private IEnumerable<long> tasks = Enumerable.Range(200000, 10000).Select(x => (long)x);
+        private int completedTasks = 0;
+        private CancellationTokenSource stopTokenSource;
+
         public MainWindow()
         {
             InitializeComponent();
             completedTasks = 0;
-            var tasks = Enumerable.Range(20, 100000).Select(x => (long)x); // Example inputs
             manager = new FibonacciTaskManager(tasks);
             listBoxLog.ItemsSource = manager.Logs;
             progressBar.Minimum = 0;
             progressBar.Maximum = manager.TotalTasks;
             progressBar.Value = 0;
-
+            stopTokenSource = new CancellationTokenSource();
         }
-
-
-        private int completedTasks = 0;
 
         private void UpdateProgress()
         {
@@ -48,6 +49,7 @@ namespace WpfApp1
                 progressBar.Value = completedTasks;
             });
         }
+
 
 
         private void btnStartTask_Click(object sender, RoutedEventArgs e)
@@ -75,11 +77,23 @@ namespace WpfApp1
 
             switch (runner)
             {
-                case TaskBasedRunner t: t.Start(4); break;
-                case DelegateBasedRunner d: d.Start(4); break;
-                case AsyncAwaitRunner a: a.Start(4); break;
-                case BackgroundWorkerRunner b: b.Start(4); break;
+                case TaskBasedRunner t: t.Start(4, stopTokenSource.Token); break;
+                case DelegateBasedRunner d: d.Start(4, stopTokenSource.Token); break;
+                case AsyncAwaitRunner a: a.Start(4, stopTokenSource.Token); break;
+                case BackgroundWorkerRunner b: b.Start(4, stopTokenSource.Token); break;
             }
+        }
+
+
+        private void btnReset_Click(object sender, RoutedEventArgs e)
+        {
+            stopTokenSource.Cancel();
+            completedTasks = 0;
+            manager = null;
+            manager = new FibonacciTaskManager(tasks);
+            listBoxLog.ItemsSource = manager.Logs;
+            stopTokenSource = new CancellationTokenSource();
+            progressBar.Value = 0;
         }
     }
 }

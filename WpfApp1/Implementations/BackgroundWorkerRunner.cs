@@ -17,14 +17,14 @@ namespace WpfApp1.Implementations
         public BackgroundWorkerRunner(FibonacciTaskManager m, Action progressUpdate) =>
             (manager, updateProgress) = (m, progressUpdate);
 
-        public void Start(int threadCount)
+        public void Start(int threadCount, CancellationToken token)
         {
             for (int i = 0; i < threadCount; i++)
             {
                 var worker = new BackgroundWorker();
                 worker.DoWork += (s, e) =>
                 {
-                    while (true)
+                    while (!token.IsCancellationRequested)
                     {
                         long task = manager.GetNextTask();
                         if (task == -1) break;

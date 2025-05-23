@@ -15,14 +15,14 @@ namespace WpfApp1.Implementations
         public TaskBasedRunner(FibonacciTaskManager m, Action progressUpdate) =>
             (manager, updateProgress) = (m, progressUpdate);
 
-        public void Start(int threadCount)
+        public void Start(int threadCount, CancellationToken token)
         {
             List<Task> tasks = new List<Task>();
             for (int i = 0; i < threadCount; i++)
             {
                 tasks.Add(Task.Run(() =>
                 {
-                    while (true)
+                    while (!token.IsCancellationRequested)
                     {
                         long task = manager.GetNextTask();
                         if (task == -1) break;

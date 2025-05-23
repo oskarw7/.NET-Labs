@@ -17,18 +17,19 @@ namespace WpfApp1.Implementations
         public DelegateBasedRunner(FibonacciTaskManager m, Action progressUpdate) =>
             (manager, updateProgress) = (m, progressUpdate);
 
-        public void Start(int threadCount)
+        public void Start(int threadCount, CancellationToken token)
         {
             for (int i = 0; i < threadCount; i++)
             {
-                WorkDelegate del = new WorkDelegate(Work);
+                WorkDelegate del = () => Work(token);
                 del.BeginInvoke(null, null);
             }
         }
 
-        private void Work()
+
+        private void Work(CancellationToken token)
         {
-            while (true)
+            while (!token.IsCancellationRequested)
             {
                 long task = manager.GetNextTask();
                 if (task == -1) break;
