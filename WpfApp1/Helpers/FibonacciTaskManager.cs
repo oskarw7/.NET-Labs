@@ -33,9 +33,9 @@ namespace WpfApp1.Helpers
             }
         }
 
-        public void LogResult(long input, long result, long timeNs)
+        public void LogResult(short thread_nr, long input, long result, long timeNs)
         {
-            string entry = $"Fib({input}) = {result} in {timeNs / 1000} μs";
+            string entry = $"({thread_nr}) | Fib({input}) = {result} in {timeNs / 1000} μs";
             App.Current.Dispatcher.Invoke(() => Logs.Add(entry));
         }
     }

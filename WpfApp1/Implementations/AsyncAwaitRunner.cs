@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using WpfApp1.Helpers;
 
@@ -29,7 +30,7 @@ namespace WpfApp1.Implementations
 
                         await Task.Delay(1); // Simulate async work
                         var (result, time) = FibonacciHelper.Calculate(task);
-                        manager.LogResult(task, result, time);
+                        manager.LogResult((short)Thread.CurrentThread.ManagedThreadId, task, result, time);
                         updateProgress();
                     }
                 }));
