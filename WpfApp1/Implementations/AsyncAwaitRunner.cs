@@ -29,12 +29,12 @@ namespace WpfApp1.Implementations
                         long task = manager.GetNextTask();
                         if (task == -1) break;
 
-                        await Task.Delay(1); // Simulate async work
-                        var (result, time) = FibonacciHelper.Calculate(task);
+                        var (result, time) = await Task.Run(() => FibonacciHelper.Calculate(task));
                         manager.LogResult((short)Thread.CurrentThread.ManagedThreadId, task, result, time);
                         updateProgress();
                     }
                 }));
+
             }
 
             await Task.WhenAll(tasks);

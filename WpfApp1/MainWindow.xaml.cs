@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -28,6 +29,7 @@ namespace WpfApp1
         private IEnumerable<long> tasks = Enumerable.Range(200000, 10000).Select(x => (long)x);
         private int completedTasks = 0;
         private CancellationTokenSource stopTokenSource;
+        private Stopwatch timer;
 
         public MainWindow()
         {
@@ -39,6 +41,7 @@ namespace WpfApp1
             progressBar.Maximum = manager.TotalTasks;
             progressBar.Value = 0;
             stopTokenSource = new CancellationTokenSource();
+            timer = Stopwatch.StartNew();
         }
 
         private void UpdateProgress()
@@ -47,6 +50,13 @@ namespace WpfApp1
             {
                 completedTasks++;
                 progressBar.Value = completedTasks;
+                if (completedTasks == tasks.Count())
+                {
+                    timer.Stop();
+                    MessageBox.Show($"All tasks completed in {timer.Elapsed.TotalSeconds:F2} seconds.",
+                                    "Done", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                }
             });
         }
 
@@ -89,11 +99,11 @@ namespace WpfApp1
         {
             stopTokenSource.Cancel();
             completedTasks = 0;
-            manager = null;
             manager = new FibonacciTaskManager(tasks);
             listBoxLog.ItemsSource = manager.Logs;
             stopTokenSource = new CancellationTokenSource();
             progressBar.Value = 0;
+            timer = Stopwatch.StartNew();
         }
     }
 }
