@@ -1,43 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using WpfApp1.Helpers;
 
 namespace WpfApp1.Implementations
 {
-    internal class AsyncAwaitRunner
+    internal class TaskRunner
     {
         private readonly FibonacciTaskManager manager;
         private readonly Action updateProgress;
+        public TaskRunner(FibonacciTaskManager m, Action progressUpdate) => (manager, updateProgress) = (m, progressUpdate);
 
-        public AsyncAwaitRunner(FibonacciTaskManager m, Action progressUpdate) =>
-            (manager, updateProgress) = (m, progressUpdate);
-
-        public async void Start(int threadCount, CancellationToken token)
+        public void Start(int threadCount, CancellationToken token)
         {
             List<Task> tasks = new List<Task>();
-
             for (int i = 0; i < threadCount; i++)
             {
-                tasks.Add(Task.Run(async () =>
+                tasks.Add(Task.Run(() =>
                 {
                     while (!token.IsCancellationRequested)
                     {
                         long task = manager.GetNextTask();
+
                         if (task == -1) break;
 
-                        var (result, time) = await Task.Run(() => FibonacciHelper.Calculate(task));
+                        var (result, time) = FibonacciThread.Calculate(task);
                         manager.LogResult((short)Thread.CurrentThread.ManagedThreadId, task, result, time);
+
                         updateProgress();
                     }
                 }));
-
             }
 
-            await Task.WhenAll(tasks);
+            Task.WhenAll(tasks);
         }
     }
+
 }

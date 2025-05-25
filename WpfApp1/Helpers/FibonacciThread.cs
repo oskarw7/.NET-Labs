@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
+
 
 namespace WpfApp1.Helpers
 {
-    internal static class FibonacciHelper
+    internal static class FibonacciThread
     {
         public static (long result, long timeNs) Calculate(long num)
         {

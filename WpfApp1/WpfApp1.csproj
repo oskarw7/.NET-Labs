@@ -63,12 +63,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Helpers\FibonacciHelper.cs" />
+    <Compile Include="Helpers\FibonacciThread.cs" />
     <Compile Include="Helpers\FibonacciTaskManager.cs" />
-    <Compile Include="Implementations\AsyncAwaitRunner.cs" />
+    <Compile Include="Implementations\AsyncRunner.cs" />
     <Compile Include="Implementations\BackgroundWorkerRunner.cs" />
-    <Compile Include="Implementations\DelegateBasedRunner.cs" />
-    <Compile Include="Implementations\TaskBasedRunner.cs" />
+    <Compile Include="Implementations\DelegateRunner.cs" />
+    <Compile Include="Implementations\TaskRunner.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

@@ -41,6 +41,7 @@ namespace WpfApp1
             progressBar.Maximum = manager.TotalTasks;
             progressBar.Value = 0;
             stopTokenSource = new CancellationTokenSource();
+
             timer = Stopwatch.StartNew();
         }
 
@@ -53,28 +54,26 @@ namespace WpfApp1
                 if (completedTasks == tasks.Count())
                 {
                     timer.Stop();
-                    MessageBox.Show($"All tasks completed in {timer.Elapsed.TotalSeconds:F2} seconds.",
+                    MessageBox.Show($"Całość zajęła {timer.Elapsed.TotalSeconds:F2} sekund.",
                                     "Done", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 }
             });
         }
 
-
-
         private void btnStartTask_Click(object sender, RoutedEventArgs e)
         {
-            StartRunner(new TaskBasedRunner(manager, UpdateProgress));
+            StartRunner(new TaskRunner(manager, UpdateProgress));
         }
 
         private void btnStartDelegate_Click(object sender, RoutedEventArgs e)
         {
-            StartRunner(new DelegateBasedRunner(manager, UpdateProgress));
+            StartRunner(new DelegateRunner(manager, UpdateProgress));
         }
 
         private void btnStartAsyncAwait_Click(object sender, RoutedEventArgs e)
         {
-            StartRunner(new AsyncAwaitRunner(manager, UpdateProgress));
+            StartRunner(new AsyncRunner(manager, UpdateProgress));
         }
 
         private void btnStartBackground_Click(object sender, RoutedEventArgs e)
@@ -84,12 +83,12 @@ namespace WpfApp1
 
         private void StartRunner(object runner)
         {
-
+            timer = Stopwatch.StartNew();
             switch (runner)
             {
-                case TaskBasedRunner t: t.Start(4, stopTokenSource.Token); break;
-                case DelegateBasedRunner d: d.Start(4, stopTokenSource.Token); break;
-                case AsyncAwaitRunner a: a.Start(4, stopTokenSource.Token); break;
+                case TaskRunner t: t.Start(4, stopTokenSource.Token); break;
+                case DelegateRunner d: d.Start(4, stopTokenSource.Token); break;
+                case AsyncRunner a: a.Start(4, stopTokenSource.Token); break;
                 case BackgroundWorkerRunner b: b.Start(4, stopTokenSource.Token); break;
             }
         }
@@ -103,7 +102,6 @@ namespace WpfApp1
             listBoxLog.ItemsSource = manager.Logs;
             stopTokenSource = new CancellationTokenSource();
             progressBar.Value = 0;
-            timer = Stopwatch.StartNew();
         }
     }
 }
